@@ -5,70 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Books</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 
-<style>
-    table{
-        margin-top: 20px;
-        margin-left:235px;
-    }
-    table, th, td {
-        border: 1px solid black;
-        border-collapse: collapse;
-        padding: 10px;
-        text-align: center
-    }
 
-    p{
-        margin-top: 20px;
-        margin-left:235px;
-    }
-
-    button{
-        background-color: blue;
-        color: white;
-    }
-
-    /* Add a black background color to the top navigation */
-    .topnav {
-    background-color: #333;
-    overflow: hidden;
-    }
-
-    /* Style the links inside the navigation bar */
-    .topnav a {
-    float: left;
-    color: #f2f2f2;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-    font-size: 17px;
-    }
-
-    /* Change the color of links on hover */
-    .topnav a:hover {
-    background-color: #ddd;
-    color: black;
-    }
-
-    /* Add a color to the active/current link */
-    .topnav a.active {
-    background-color: blue;
-    color: white;
-    }
-
-    footer{
-        background-color: #333
-    }
-</style>
-    <div class="topnav">
-        <a class="active" href="#home">Home</a>
-        <a href="#news">News</a>
-        <a href="#contact">Contact</a>
-        <a href="#about">About</a>
-    </div>
 </head>
 <body>
-    <table class="table table-striped">
+    <h1>Data Buku</h1>
+    @if (Session::has('created'))
+        <div class="alert alert-success">{{Session::get('created')}}</div>    
+    @endif 
+
+    @if (Session::has('updated'))
+        <div class="alert alert-success">{{Session::get('updated')}}</div>    
+    @endif 
+
+    @if (Session::has('deleted'))
+        <div class="alert alert-success">{{Session::get('deleted')}}</div>    
+    @endif 
+
+    @if (count($data_buku))
+        <div class="alert alert-success"> Ditemukan <span class="fw-bold"> {{count($data_buku)}} </span> data dengan kata kunci <span class="fw-bold"> {{$search}} </span></div>
+        <div class="alert alert-warning"> Data tidak ditemukan </div>
+        <a href="{{route('buku.search')}}" class="btn btn-warning">kembali</a>
+    @endif 
+
+    <a href="{{route('buku.create')}}" class="btn btn-primary ">Tambah Buku</a>
+
+    <form action="{{route('buku.search')}}">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Search">
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+        
+    <table class="container">
         <thead>
             <tr>
                 <th>id</th>
@@ -77,27 +49,46 @@
                 <th>price</th>
                 <th>published_date</th>
                 <th>Action</th>
+                <th></th>
             </tr>
         </thead>
-        <tbody>
-            @foreach ($books_data as $index => $buku)
+        <tbody>       
+            @foreach ($data as $index => $buku)
                 <tr>
                     <td>{{ $buku->id }}</td>
                     <td>{{ $buku->title }}</td>
                     <td>{{ $buku->author }}</td>
-                    <td>{{ "Rp.".number_format($buku->price,2,',','.') }}</td>
+                    <td>{{ "Rp".number_format($buku->price,2,',','.') }}</td>
                     <td>{{ \Carbon\Carbon::parse($buku->published_date)->format('d-m-Y') }}</td>
-                    <td><button href="/buku/{{ $buku->id }}">Detail</button></td>
+                    <td>
+                        <a href="{{route('buku.edit',$buku->id)}}" class="btn btn-primary">Detail</a>
+                    </td>
+                    <td>
+                        <form action="{{route('buku.destroy',$buku->id)}}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                            <button onclick='return confirm("Yakin deck?")' type="submit" class="btn btn-danger">Hapus</button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
         </tbody>
+        <tfoot>
+            <tr>
+                <th>id</th>
+                <th>title</th>
+                <th>author</th>
+                <th>price</th>
+                <th>published_date</th>
+                <th>Action</th>
+                <th></th>
+            </tr>
+        </tfoot>
     </table>
-    <p>Total Books: {{ $jumlah_buku }}</p>
-    <p>Total Price: {{ "Rp.".number_format($total_harga,2,',','.') }} </p>
+    
+    <div>{{$data_buku->links()}}</div>
+    <div><strong>Total Books: {{ $jumlah_buku }}</strong></div>
+    <h1>Total Price: {{ "Rp.".number_format($total_harga,2,',','.') }} </h1>
 
-    <footer>
-        <p>Author: Hege Refsnes</p>
-        <p><a href="mailto:hege@example.com">hege@example.com</a></p>
-    </footer>
 </body>
 </html>
