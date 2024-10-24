@@ -7,7 +7,6 @@
     <title>Books</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
 
 
 </head>
@@ -25,11 +24,19 @@
         <div class="alert alert-success">{{Session::get('deleted')}}</div>    
     @endif 
 
+    @if ($cari)
     @if (count($data_buku))
-        <div class="alert alert-success"> Ditemukan <span class="fw-bold"> {{count($data_buku)}} </span> data dengan kata kunci <span class="fw-bold"> {{$search}} </span></div>
-        <div class="alert alert-warning"> Data tidak ditemukan </div>
-        <a href="{{route('buku.search')}}" class="btn btn-warning">kembali</a>
-    @endif 
+        <div class="alert alert-success">Ditemukan <strong>{{ count($data_buku) }}</strong> data dengan kata: <strong>{{ $cari }}</strong>
+        </div>
+    @else
+        <div class="alert alert-warning">
+            <h4>Data {{ $cari }} tidak ditemukan</h4>
+            <a href="/buku" class="btn btn-warning">Kembali</a>
+        </div>
+    @endif
+    @endif
+    
+
 
     <a href="{{route('buku.create')}}" class="btn btn-primary ">Tambah Buku</a>
 
@@ -90,5 +97,16 @@
     <div><strong>Total Books: {{ $jumlah_buku }}</strong></div>
     <h1>Total Price: {{ "Rp.".number_format($total_harga,2,',','.') }} </h1>
 
+
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#table-data').DataTable();
+        });
+    </script>
 </body>
 </html>

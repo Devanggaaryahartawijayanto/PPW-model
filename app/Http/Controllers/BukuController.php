@@ -12,16 +12,17 @@ class BukuController extends Controller
 {
     public function index()
     {
-        $batas=5;
-        $data_buku = Buku::orderBY('id', 'desc')->paginate($batas);
-        $no= ($data_buku->currentPage() - 1) * $batas+1;
-        
-
         $data = Buku::all();
+        $batas = 5;
+        $cari = null; // Inisialisasi variabel $cari
+        $data_buku = Buku::orderBy('id', 'desc')->paginate($batas);
+        $no = $batas * ($data_buku->currentPage() - 1);
         $jumlah_buku = $data->count();
         $total_harga = $data->sum('price');
-        return view('index', compact('data' , 'jumlah_buku', 'total_harga','data_buku', 'no'));
+        
+        return view('index', compact('data', 'jumlah_buku', 'total_harga', 'data_buku', 'no', 'cari'));
     }
+    
 
     public function create()
     {
@@ -79,15 +80,19 @@ class BukuController extends Controller
     }
 
     public function search(Request $request)
-    {
-        $data = Buku::all();
-        $jumlah_buku = $data->count();
-        $total_harga = $data->sum('price');
+    {   
+        Paginator::useBootstrapFive();
+        $data=Buku::all();
         $batas=5;
         $cari = $request->kata;
+        $jumlah_buku = Buku::count();
         $data_buku = Buku::where('title', 'like', "%".$cari."%")->orwhere('author', 'like', "%".$cari."%")->paginate($batas);
-        $no= ($data_buku->currentPage() - 1) * $batas+1;
-        return view('index', compact('data' , 'jumlah_buku', 'total_harga','data_buku', 'no'));
+        $no= $batas * ($data_buku->currentPage() - 1);
+        $total_harga = $data->sum('price');
+        return view('index', compact(  'data','jumlah_buku', 'cari','data_buku', 'total_harga', 'no'));
     }
+
+    //auth
+    
 
 }

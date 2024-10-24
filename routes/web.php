@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\BukuController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -25,4 +27,11 @@ Route::post('/bukus', [BukuController::class, 'store'])->name('buku.store');
 Route::delete('/buku/{buku}', [BukuController::class, 'destroy'])->name('buku.destroy');
 Route::get('/buku/{buku}/edit', [BukuController::class, 'edit'])->name('buku.edit');
 Route::post('/buku/{buku}', [BukuController::class, 'update'])->name('buku.update');
-Route::get('/buku-search', [BukuController::class, 'search'])->name('buku.search');
+Route::get('/buku/search', [BukuController::class, 'search'])->name('buku.search');
+
+Auth::routes([
+    'register' => false,
+    'reset' => false,
+]);
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
