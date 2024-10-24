@@ -29,6 +29,11 @@ Route::get('/buku/{buku}/edit', [BukuController::class, 'edit'])->name('buku.edi
 Route::post('/buku/{buku}', [BukuController::class, 'update'])->name('buku.update');
 Route::get('/buku/search', [BukuController::class, 'search'])->name('buku.search');
 
+Route::post('/logout', function () {
+    Auth::logout();
+    return redirect('/login');  // Mengarahkan ke halaman login setelah logout
+})->name('logout');
+
 Auth::routes([
     'register' => false,
     'reset' => false,

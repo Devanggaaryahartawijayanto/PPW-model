@@ -16,8 +16,15 @@
 
                     {{ __('You are logged in!') }}
                 </div>
+
+                <form action="{{ route('buku.search') }}">
+                    <div class="input-group text-end">
+                        <button type="submit" class="btn btn-primary">Next</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
+
 @endsection
