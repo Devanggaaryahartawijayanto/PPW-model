@@ -3,6 +3,8 @@
 use App\Http\Controllers\BukuController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\SendEmailController;
+
 
 
 /*
@@ -40,3 +42,8 @@ Auth::routes([
 ]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::get('/send-mail', [SendEmailController::class,
+'index'])->name('kirim-email');
+
+Route::post('/post-email', [SendEmailController::class, 'store'])->name('post-email');
