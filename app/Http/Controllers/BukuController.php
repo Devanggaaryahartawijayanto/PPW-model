@@ -36,17 +36,36 @@ class BukuController extends Controller
             'author' => 'required|string:30',
             'price' => 'required|numeric',
             'published_date' => 'required|date',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        if ($request->hasFile('photo')) {
+            $file = $request->file('photo');
+            $filenameWithExt = $file->getClientOriginalName();
+            $filename = pathinfo($filenameWithExt, PATHINFO_FILENAME);
+            $extension = $file->getClientOriginalExtension();
+            $filenameToStore = $filename . '_' . time() . '.' . $extension; // Fix extension placement
+    
+            // Store the file and get the path
+            $file->storeAs('public', $filenameToStore);
+        } else {
+            // Handle the case where no file was uploaded (optional)
+            return redirect()->back()->withErrors(['photo' => 'File is required.']);
+        }
+
 
         $buku = new Buku();
         $buku->title = $request->title;
         $buku->author = $request->author;
         $buku->price = $request->price;
         $buku->published_date = $request->published_date;
+        $buku->photo = $filenameToStore;
         $buku->save();
         
         return redirect('/buku')->with('created', 'Data Buku Berhasil Ditambahkan!');
     }
+
+    
 
     public function destroy($id)
     {
@@ -90,6 +109,12 @@ class BukuController extends Controller
         $no= $batas * ($data_buku->currentPage() - 1);
         $total_harga = $data->sum('price');
         return view('index', compact(  'data','jumlah_buku', 'cari','data_buku', 'total_harga', 'no'));
+    }
+
+    public function __construct()
+    {
+        $this->middleware('auth')->only('index');
+        $this->middleware('admin');
     }
 
     //auth

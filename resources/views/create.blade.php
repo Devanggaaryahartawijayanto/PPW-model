@@ -20,7 +20,7 @@
         @endif
         <div class="container">
             <h4>Tambah Data Buku</h4>
-            <form action="{{route('buku.store')}}" method="post">
+            <form action="{{route('buku.store')}}" method="post" enctype="multipart/form-data">
                 @csrf
                 <table class="table table-bordered">
                     <tr>
@@ -38,6 +38,14 @@
                     <tr>
                         <td>Tahun Terbit</td>
                         <td><input type="date" name="published_date"  class="form-control" ></td>
+                    </tr>
+                    <tr>
+                        <td>Gambar</td>
+                        <td><input id="photo" type="file" name="photo"  class="form-control @error('photo') is-invalid @enderror" value="{{old('photo')}}"> 
+                        @if ($errors->has('photo'))
+                        <span class="text-danger">{{$errors->first('photo')}}</span>
+                        @endif
+                        </td>
                     </tr>
                 </table>
                 <div>

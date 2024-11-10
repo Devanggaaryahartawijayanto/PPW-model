@@ -11,4 +11,5 @@ class Buku extends Model
     use HasFactory;
     protected $table = 'books';
     protected $dates = ['published_date'];
+    protected $fillable = ['title', 'author', 'price', 'published_date', 'photo'];
 }

@@ -10,7 +10,7 @@
 
     <!--Bootstrap 5 icons CDN-->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
     <title>Data Buku</title>
 
     <style>
@@ -119,6 +119,8 @@
   </head>
   <body>
 
+
+
     <!-- Bagian Buku -->
     <section class="p-3">
       <div class="container">
@@ -147,19 +149,18 @@
         @endif
         @endif
 
-        <a href="{{route('buku.create')}}" class="btn btn-primary ">Tambah Buku</a>
+        @if(Auth::check()&&Auth::user()->role=='admin')
+            <div class="d-flex justify-content-end">
+                <a href="{{route('buku.create')}}" class="btn btn-primary">Tambah Buku</a>
+            </div>
+        @endif
 
-        <form action="{{route('buku.search')}}">
-          <div class="input-group my-3">
-              <input type="text" name="search" class="form-control" placeholder="Search">
-              <button type="submit" class="btn btn-primary">Search</button>
-          </div>
-        </form>
 
-        <table class="table table-striped table-hover mt-3 text-center table-bordered">
+        <table class="table table-striped table-hover mt-3 text-center table-bordered" id="datatablePro">
           <thead>
               <tr>
                   <th>id</th>
+                  <th>image</th>
                   <th>title</th>
                   <th>author</th>
                   <th>price</th>
@@ -172,6 +173,7 @@
               @foreach ($data as $index => $buku)
                   <tr>
                       <td>{{ $buku->id }}</td>
+                      <td><img src="{{ asset('storage/'.$buku->photo) }}" alt="" width="100"></td>
                       <td>{{ $buku->title }}</td>
                       <td>{{ $buku->author }}</td>
                       <td>{{ "Rp".number_format($buku->price,2,',','.') }}</td>
@@ -191,7 +193,7 @@
           </tbody>
         </table>
 
-        <div>{{$data_buku->links()}}</div>
+        
         <div><strong>Total Books: {{ $jumlah_buku }}</strong></div>
         <h1>Total Price: {{ "Rp.".number_format($total_harga,2,',','.') }} </h1>
 
@@ -199,11 +201,13 @@
     </section>
 
     <!-- Option 1: Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
-    <script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
+    <script>
+        $(document).ready( function () {
+            $('#datatablePro').DataTable();
+        } );
+    </script>
 
     <script>
         $(document).ready(function() {
